@@ -1,5 +1,7 @@
-Eva Lau, Ethan Lebowitz, Karina Thanawala
-Plague! The Game
+LocustKing The Game
+Creators: Eva Lau @evamlau, Ethan Lebowitz @EthanLebowitz, Karina Thanawala @kthanawala21
+
+Created for as the final project for CS-112  
 
 To compile: 
 javac *.java

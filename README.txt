@@ -22,7 +22,7 @@ You start off with one follower. You can gain more followers by draining the lif
 Statistics for your current game are displayed in the top left corner of the game window. Percentage of tiles that remain alive, percentage of tiles that have become dead, and follower count is shown. These stats indicate your progress and health in the game. 
 
 Mountains:
-Mountain tiles are the ones with black edges and white centers (it’s hard to draw a 2D 8bit mountain). They will noticeably slow leader speed, due to rough terrain. Mountain tiles count as dead tiles and lingering on them will reduce the size of your swarm of followers. It’s best to avoid mountain tiles, if possible. 
+Mountain tiles are the ones with black edges and white centers. They will noticeably slow leader speed, due to rough terrain. Mountain tiles count as dead tiles and lingering on them will reduce the size of your swarm of followers. It’s best to avoid mountain tiles, if possible. 
 
 Losing:
 You lose when your follower count reaches zero. Close the game window and try again.
@@ -30,4 +30,4 @@ You lose when your follower count reaches zero. Close the game window and try ag
 Winning:
 You win when you have consumed all of the life on the map and your follower count has reached zero, i.e., when you, the leader, are the only alive thing on the map. Congratulations, you are the Locust King. Close the game window and try again.
 
-Tips: The more followers you have the faster you should go to minimize the time your followers spend on dead tiles. Conversely, when you have very few followers you should probably go more slowly because draining the life completely from tiles takes longer. If you want to win, be systemic. Don’t paint yourself into a corner and so that there is a sea of dead tiles separating you from the remaining alive tiles. 
+Tips: The more followers you have the faster you should go to minimize the time your followers spend on dead tiles. Conversely, when you have very few followers you should probably go more slowly because draining the life completely from tiles takes longer. If you want to win, be systemic. Don’t paint yourself into a corner so that there is a sea of dead tiles separating you from the remaining alive tiles. 

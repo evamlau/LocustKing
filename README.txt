@@ -1,7 +1,9 @@
 LocustKing The Game
 Creators: Eva Lau @evamlau, Ethan Lebowitz @EthanLebowitz, Karina Thanawala @kthanawala21
 
-Created for as the final project for CS-112 in 2018.
+Created for as the final project for CS-112 in 2018. 
+
+LocustKing is a cute little JPanel game in which the player (the Locust King) leads a simulated swarm of locusts to pillage a pixelated countryside. As-is this game is fully playable, but Eva may add some features just for fun. 
 
 To compile: 
 javac *.java

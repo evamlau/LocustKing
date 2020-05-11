@@ -1,7 +1,7 @@
 LocustKing The Game
 Creators: Eva Lau @evamlau, Ethan Lebowitz @EthanLebowitz, Karina Thanawala @kthanawala21
 
-Created for as the final project for CS-112  
+Created for as the final project for CS-112 in 2018.
 
 To compile: 
 javac *.java

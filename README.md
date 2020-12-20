@@ -1,6 +1,6 @@
 # LocustKing The Game #
 
-![demo](https://media.giphy.com/media/q9xbYCIpVcwINawWoH/giphy.gif)
+![demo](https://media3.giphy.com/media/q9xbYCIpVcwINawWoH/giphy.gif)
 
 ### About ###
 

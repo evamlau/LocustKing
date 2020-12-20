@@ -1,6 +1,6 @@
 # LocustKing The Game #
 
-![demo](demo/20201220_152646.gif)
+<img src="demo/20201220_152646.gif" width="75%">
 
 ### About ###
 

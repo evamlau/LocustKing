@@ -22,7 +22,9 @@ To terminate:
 Close the game window (i.e., x out). 
 
 User input:
-Control the movement of the leader boid (the sprite that looks like a little locust wearing a crown) by moving your mouse. The leader will fly towards your cursor. Follower locusts (little black dots) will follow the leader. Move your cursor closer to the leader to slow it down, move it further away to speed it up. Don’t go too fast, followers might not be able to keep up with you! If you outpace the followers, wait a moment or slow down and they will find you again.
+Control the movement of the leader boid (the sprite that looks like a little locust wearing a crown) by moving your mouse. The leader will fly towards your cursor. Follower locusts (little brown dots) will follow the leader. Move your cursor closer to the leader to slow it down, move it further away to speed it up. Don’t go too fast, followers might not be able to keep up with you! If you outpace the followers, wait a moment or slow down and they will find you again.
+
+Press "m" to toggle music on and off.
 
 Note: the MouseListener will not see your mouse position if your cursor is not over the game window. 
 

@@ -23,7 +23,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Dimension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
@@ -33,6 +36,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import java.awt.Image;
+import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
@@ -41,12 +45,15 @@ import java.awt.RenderingHints;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.geom.Rectangle2D;
+
+import java.io.File;
+import java.io.IOException;
 //=======================================================================
 
 
 
 //=======================================================================
-public class Main extends JPanel implements MouseMotionListener{
+public class Main extends JPanel implements MouseMotionListener, KeyListener{
 //=======================================================================
 
 
@@ -66,6 +73,8 @@ public class Main extends JPanel implements MouseMotionListener{
     public static final int FPS = 60;
     public Pair worldDimensions = new Pair(100, 100);
     World world;
+    AudioPlayer player;
+    String currentTrack;
     public Pair mousePosition;
     boolean lost = false;
     boolean won = false;
@@ -168,10 +177,13 @@ public class Main extends JPanel implements MouseMotionListener{
      **/
     public Main(){ 
 		world = new World(worldDimensions, this); 
+        player = new AudioPlayer();
 		addMouseMotionListener(this);
+        addKeyListener(this);
 		this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		Thread mainThread = new Thread(new Runner());
 		mainThread.start();
+        startMusicThread();
     }// Main () constructor
     //=======================================================================
 
@@ -229,7 +241,7 @@ public class Main extends JPanel implements MouseMotionListener{
 
     //=======================================================================
     /**
-     * Draws the score information panel in the upper left corner.
+     * Draws the score information panel in the upper left corner. And now also the current
      **/
 	
 	private void drawPanel(Graphics g){
@@ -254,6 +266,15 @@ public class Main extends JPanel implements MouseMotionListener{
 		g.drawString(String.valueOf(percentAlive)+"%", (int)position.x + 80, (int)position.y + 45); // % alive
 		g.drawString(String.valueOf(100-percentAlive)+"%", (int)position.x + 80, (int)position.y + 105); // % dead
 		g.drawString(String.valueOf(world.numBoids), (int)position.x + 80, (int)position.y + 165); // % dead
+        
+        if(player.playing){
+            //draw current track string next to panel
+            int fontSize = 17;
+            g.setFont(new Font("Courier", Font.BOLD, fontSize)); 
+            g.setColor(new Color((float).857,(float).857,(float)0.857));
+            Pair trackPosition = new Pair((position.x+dimensions.x+15), position.y+25);
+            g.drawString("\ud83c\udfa7 "+currentTrack, (int)trackPosition.x, (int)trackPosition.y); 
+        }
 	}// drawPanel ()
     //=======================================================================
 
@@ -311,6 +332,71 @@ public class Main extends JPanel implements MouseMotionListener{
 		if(won){
 			displayMessage(g, "YOU WON", Color.GREEN);
 		}
+		
+    }
+    
+    
+    class Music implements Runnable{
+        public void run(){
+            //list all tracks in folder (from https://www.tutorialspoint.com/how-to-get-list-of-all-files-folders-from-a-folder-in-java)
+            //Creating a File object for directory
+            File directoryPath = new File("music/");
+            //List of all files and directories
+            String contents[] = directoryPath.list();
+            
+            ArrayList<String> tracks = new ArrayList<String>(); //so we can shuffle the list
+            Collections.addAll(tracks, contents);
+            
+            Collections.shuffle(tracks);
+            while(player.playing){
+                for (String track : tracks) {
+                    currentTrack = track.replace(".wav", ""); //for the display
+                    if(player.playing){
+                        String audioFilePath = "music/"+track;
+                        player.play(audioFilePath);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void startMusicThread(){
+        Thread musicThread = new Thread(new Music());
+        musicThread.start();
+    }
+    
+    public void toggleMusic(){
+        boolean currentlyPlaying = player.playing;
+        if(currentlyPlaying){
+            player.playing = false;
+        }else{
+            player.playing = true;
+            startMusicThread();
+        }
+    }
+    
+    //////////////////taken from lab 6 (keyboard spheres)
+    public void keyPressed(KeyEvent e) {
+        
+        char c=e.getKeyChar();
+        //System.out.println("You pressed down: " + c);
+
+    }
+    public void keyReleased(KeyEvent e) {
+        
+        char c=e.getKeyChar();
+        //System.out.println("\tYou let go of: " + c);
+        if(c == 'm'){
+            toggleMusic();
+        }
+	
+    }
+
+
+    public void keyTyped(KeyEvent e) { //use to control music
+        
+        char c = e.getKeyChar();
+        //System.out.println("You typed: " + c);
 		
     }
 

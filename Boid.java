@@ -218,8 +218,8 @@ class Locust extends Boid{
 	separate.y = -1*(separate.y/neighborCount);
 	separate = separate.normalizeVector();
 
-	vel.x += ((align.x)*.6 + (towardsCentroid.x)*.8 + (separate.x)*4); //modify velocity based on weighted calculations
-	vel.y += ((align.y)*.6 + (towardsCentroid.y)*.8 + (separate.y)*4); //different weights = different boid behavior
+	vel.x += ((align.x)*0 + (towardsCentroid.x)*0 + (separate.x)*0.7); //modify velocity based on weighted calculations
+	vel.y += ((align.y)*0 + (towardsCentroid.y)*0 + (separate.y)*0.7); //different weights = different boid behavior
 	
 	vel = vel.normalizeVector().times(50); //multiply or divide this to slow down or speed up
 	return vel;
@@ -233,9 +233,9 @@ class Locust extends Boid{
      *based on neighborhood () and follow () output.
      **/
     public void flock(ArrayList<Locust> boids, Boid kingBoid){
-	    for(int i = 0; i < boids.size(); i++){
-		boids.get(i).velocity = neighborhood(boids.get(i), boids).add(follow(kingBoid)).times(4);
-	    }
+	    //for(int i = 0; i < boids.size(); i++){
+		this.velocity = neighborhood(this, boids).add(follow(kingBoid)).times(4);
+	    //}
     }//flock ()
     //=======================================================================
 
@@ -248,17 +248,45 @@ class Locust extends Boid{
      * on screen. and also out of respect, probably.
      **/
     public Pair follow(Boid kingBoid){
-	Pair behindKing = kingBoid.position;
-	if(kingBoid.velocity.x == 0 || kingBoid.velocity.y == 0){
-	    behindKing = new Pair(kingBoid.position.x - position.x, kingBoid.position.y - position.y);
-	    behindKing = behindKing.normalizeVector().times(15);
-	}else{
-	    behindKing  =  kingBoid.velocity.normalizeVector().times(-15).add(kingBoid.position);
-	}
-
-	Pair towardsKing = new Pair(behindKing.x - position.x, behindKing.y - position.y); 
-	towardsKing = towardsKing.normalizeVector().times(100);
-        return towardsKing;	
+		
+		Pair towardsKing = new Pair(kingBoid.position.x - position.x, kingBoid.position.y - position.y); 
+		towardsKing = towardsKing.normalizeVector();
+		double angleTowardsKing = Math.atan(towardsKing.y/towardsKing.x); //following if/else statements are to convert to positive angle from the x axis (0-2pi)
+		if(towardsKing.x < 0.0){angleTowardsKing = (Math.PI) + angleTowardsKing;} //if in second or third quadrant
+		else if(towardsKing.x > 0.0 && towardsKing.y < 0.0){angleTowardsKing = (Math.PI * 2) + angleTowardsKing;} //if in fourth quadrant
+		double currentAngle = Math.atan(this.velocity.y/this.velocity.x);
+		if(this.velocity.x < 0.0){currentAngle = (Math.PI) + currentAngle;} //if in second or third quadrant
+		else if(this.velocity.x > 0.0 && this.velocity.y < 0.0){currentAngle = (Math.PI * 2) + currentAngle;} //if in fourth quadrant
+		double angleChange = (Math.PI/180)*5; //5 degrees in radians
+		if( currentAngle > angleTowardsKing && Math.abs(currentAngle - angleTowardsKing) > Math.PI ){ // there are four possible cases used to determine if toward is clockwise or counter clockwise
+			angleChange = angleChange;
+		}
+		else if( currentAngle > angleTowardsKing && Math.abs(currentAngle - angleTowardsKing) < Math.PI ){ 
+			angleChange = -angleChange; 
+		}
+		else if( currentAngle < angleTowardsKing && Math.abs(currentAngle - angleTowardsKing) > Math.PI ){ 
+			angleChange = -angleChange; 
+		}
+		else if( currentAngle < angleTowardsKing && Math.abs(currentAngle - angleTowardsKing) < Math.PI ){ 
+			angleChange = angleChange; 
+		}
+		
+		double xDifference = kingBoid.position.x - position.x;
+		double yDifference = kingBoid.position.y - position.y;
+		if( Math.sqrt((yDifference*yDifference) + (xDifference*xDifference)) < 50){ //if distance from this boid to king is small steer away, otherwise steer towards
+			angleChange = -angleChange*2; //flip to away instead of toward
+		}
+		
+		double newAngle = currentAngle + angleChange;
+		Pair newVelocity = new Pair(Math.cos(newAngle), Math.sin(newAngle)).times(100);
+		//System.out.println(newVelocity.x);
+		//System.out.println(newVelocity.y);
+		
+		/* float xDifference = kingBoid.position.x - position.x;
+		float yDifference = kingBoid.position.y - position.y;
+		Pair towardsKing = new Pair(behindKing.x - position.x, behindKing.y - position.y); 
+		towardsKing = towardsKing.normalizeVector().times(100); */
+        return newVelocity;	
     }// follow ()
     
 
@@ -354,10 +382,10 @@ class KingBoid extends Boid{
 		Image image = loadImage();
 		 Graphics2D g2D = (Graphics2D)g;
 		 AffineTransform backup = g2D.getTransform();
-		 AffineTransform a  = AffineTransform.getRotateInstance(Math.atan2(velocity.normalizeVector().y, velocity.normalizeVector().x)+.5*Math.PI,(.5*Main.WIDTH)+(.5*boidWidth) , (.5*Main.HEIGHT)+(.5*boidHeight));
+		 AffineTransform a  = AffineTransform.getRotateInstance(Math.atan2(velocity.normalizeVector().y, velocity.normalizeVector().x)+.5*Math.PI,(.5*Main.WIDTH) , (.5*Main.HEIGHT));
 		 g2D.setTransform(a);
  
-		 g2D.drawImage(loadImage(),(int)(.5*Main.WIDTH), (int)(.5*Main.HEIGHT), mainInstance);
+		 g2D.drawImage(loadImage(),(int)((.5*Main.WIDTH) - (.5*boidWidth)), (int)((.5*Main.HEIGHT) - (.5*boidHeight)), mainInstance);
 		 g2D.setTransform(backup);
 	        
     }// draw ()
@@ -432,7 +460,7 @@ public class Boid{
 	    Random r = new Random();
 		this.position = new Pair(X, Y);
 		this.velocity = new Pair((r.nextDouble()-.5)*10,(r.nextDouble()-.5)*10);
-		color = Color.BLACK;
+		color = new Color((float).674, (float).083, (float).000);
 		this.world = w;
     }// Parent class Boid Constructor
     //===================================================================
@@ -444,11 +472,11 @@ public class Boid{
      * position coords. 
      **/
     public void draw(Graphics g, World world){
-	Color c = g.getColor();
-	g.setColor(color);
-	Pair relativePosition = world.toDisplayCoords(position, world.kingBoid.position);
-	g.fillOval((int)(relativePosition.x), (int)(relativePosition.y),  15, 15);
-	g.setColor(c);
+		Color c = g.getColor();
+		g.setColor(color);
+		Pair relativePosition = world.toDisplayCoords(position, world.kingBoid.position);
+		g.fillOval((int)(relativePosition.x), (int)(relativePosition.y),  15, 15);
+		g.setColor(c);
     }// draw ()
     //===================================================================
 
